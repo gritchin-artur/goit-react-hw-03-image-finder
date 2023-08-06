@@ -1,4 +1,5 @@
 import axios from "axios";
+import propTypes from "prop-types";
 
 import { Notify } from "notiflix/build/notiflix-notify-aio";
 async function fetchApi(topic, page) {
@@ -16,4 +17,8 @@ async function fetchApi(topic, page) {
     );
   }
 }
+fetchApi.propTypes = {
+  topic: propTypes.string.isRequired,
+  page: propTypes.number.isRequired,
+};
 export default fetchApi;
