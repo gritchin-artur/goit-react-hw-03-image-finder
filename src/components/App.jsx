@@ -7,7 +7,7 @@ import Loader from "./Loader/Loader";
 import SearchBar from "./SearchBar/SearchBar";
 import Modal from "./Modal/Modal";
 
-import fetchApi from "./fetch";
+import fetchApi from "./fetch/fetch";
 import { GlobalStyled } from "./createGlobalStyle/createGlobalStyle";
 
 export class App extends Component {
