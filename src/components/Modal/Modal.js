@@ -5,7 +5,7 @@ import propTypes from "prop-types";
 const preventScroll = (e) => {
   e.preventDefault();
 };
-export default class Modal extends Component {
+class Modal extends Component {
   static propTypes = {
     selectedImage: propTypes.string.isRequired,
     tags: propTypes.string.isRequired,
@@ -46,3 +46,5 @@ export default class Modal extends Component {
     );
   }
 }
+
+export default Modal;
