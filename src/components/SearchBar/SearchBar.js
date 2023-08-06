@@ -1,21 +1,31 @@
-import css from "./SearchBar.module.css";
+import { Header, Form, Button, Span, Input } from "./SearchBar.styled";
 
-const SearchBar = () => (
-  <header className={css.SearchBar}>
-    <form className={css.form}>
-      <button type="submit" className={css.button}>
-        <span className={css.buttonLabel}>Search</span>
-      </button>
+import propTypes from "prop-types";
 
-      <input
-        className={css.input}
+const SearchBar = ({ onSubmit, value, onChange }) => (
+  <Header>
+    <Form onSubmit={onSubmit}>
+      <Button type="submit">
+        <Span>Search</Span>
+      </Button>
+
+      <Input
         type="text"
-        autocomplete="off"
-        autofocus
+        autoComplete="off"
+        autoFocus
         placeholder="Search images and photos"
+        name="serchQuery"
+        value={value}
+        onChange={onChange}
       />
-    </form>
-  </header>
+    </Form>
+  </Header>
 );
+
+SearchBar.propTypes = {
+  onSubmit: propTypes.func.isRequired,
+  onChange: propTypes.func.isRequired,
+  value: propTypes.string.isRequired,
+};
 
 export default SearchBar;

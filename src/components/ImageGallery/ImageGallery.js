@@ -1,10 +1,17 @@
-import ImageGalleryItem from "./ImageGalleryItem/ImageGalleryItem";
-import css from "./ImageGallery.module.css";
+import { Ul } from "./ImageGallery.styled";
 
-const ImageGallery = () => (
-  <ul className={css.galleryItem}>
-    <ImageGalleryItem />
-  </ul>
+import propTypes from "prop-types";
+import ImageGalleryItem from "./ImageGalleryItem/ImageGalleryItem";
+
+const ImageGallery = ({ images, ...selectedImage }) => (
+  <Ul>
+    <ImageGalleryItem images={images} {...selectedImage} />
+  </Ul>
 );
+
+ImageGallery.propTypes = {
+  images: propTypes.array.isRequired,
+  selectedImage: propTypes.func.isRequired,
+};
 
 export default ImageGallery;

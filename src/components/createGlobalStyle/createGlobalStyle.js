@@ -1,3 +1,6 @@
+import { createGlobalStyle } from "styled-components";
+
+export const GlobalStyled = createGlobalStyle`
 html {
   box-sizing: border-box;
   width: 100vw;
@@ -25,10 +28,4 @@ img {
   max-width: 100%;
   height: auto;
 }
-
-.App {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-gap: 16px;
-  padding-bottom: 24px;
-}
+`;
