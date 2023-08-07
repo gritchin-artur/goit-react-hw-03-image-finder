@@ -12,13 +12,13 @@ class Modal extends Component {
     onClose: propTypes.func.isRequired,
   };
   componentDidMount() {
-    window.addEventListener("keydown", this.handleKeyDown);
+    document.addEventListener("keydown", this.handleKeyDown);
     window.addEventListener("wheel", preventScroll, { passive: false });
     window.addEventListener("touchmove", preventScroll, { passive: false });
   }
 
   componentWillUnmount() {
-    window.removeEventListener("keydown", this.handleKeyDown);
+    document.removeEventListener("keydown", this.handleKeyDown);
     window.removeEventListener("wheel", preventScroll);
     window.removeEventListener("touchmove", preventScroll);
   }

@@ -15,44 +15,43 @@ export class App extends Component {
     seachTopic: "",
     images: [],
     page: 1,
-    selectedImage: null,
-    alt: null,
-    status: "idle",
-    error: null,
-    showModal: false,
   };
+  totalHits = 0;
 
   async componentDidUpdate(_, prevState) {
     const { page, topic } = this.state;
     if (prevState.topic !== topic || prevState.page !== page) {
       this.setState({ status: "pending" });
+      try {
+        const imageData = await fetchApi(topic, page);
+        const imagesHits = imageData.hits;
+        this.totalHits = imageData.total;
 
-      const imagesHits = (await fetchApi(topic, page)).hits;
-
-      if (!imagesHits.length) {
-        Notify.failure(
-          "No results were found for your search, please try something else."
-        );
+        if (!imagesHits.length) {
+          Notify.failure(
+            "No results were found for your search, please try something else."
+          );
+        }
+        this.setState(({ images }) => ({
+          images: [...images, ...imagesHits],
+          status: "resolved",
+        }));
+      } catch (error) {
+        this.setState({
+          status: "error message",
+        });
       }
-      this.setState(({ images }) => ({
-        images: [...images, ...imagesHits],
-        status: "resolved",
-      }));
     }
   }
 
   // click to button seach
   handleFormSubmit = (topic) => {
     this.setState({
-      seachTopic: "",
-      page: 1,
+      seachTopic: topic,
+      page: 42,
       images: [],
-      selectedImage: null,
-      alt: null,
-      status: "idle",
-      showModal: false,
+      topic,
     });
-    this.setState({ topic });
   };
 
   // modal imag
@@ -66,8 +65,8 @@ export class App extends Component {
 
   // click button load more
   loadMore = () => {
-    this.setState((e) => ({
-      page: e.page + 1,
+    this.setState((prevState) => ({
+      page: prevState.page + 1,
     }));
   };
 
@@ -121,7 +120,7 @@ export class App extends Component {
             selectedImage={this.handleSelectedImage}
           />
         )}
-        {images.length > 0 && images.length !== this.totalHits && (
+        {images.length !== this.totalHits && status === "resolved" && (
           <Button onClick={this.loadMore} />
         )}
         {showModal && (
