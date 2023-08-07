@@ -48,7 +48,7 @@ export class App extends Component {
   handleFormSubmit = (topic) => {
     this.setState({
       seachTopic: topic,
-      page: 42,
+      page: 1,
       images: [],
       topic,
     });
