@@ -12,20 +12,26 @@ import { GlobalStyled } from "./createGlobalStyle/createGlobalStyle";
 
 export class App extends Component {
   state = {
-    seachTopic: "",
+    topic: "",
     images: [],
     page: 1,
+    totalHits: 0,
+    status: "idle",
+    error: null,
+    selectedImage: "",
+    alt: "",
+    showModal: false,
   };
-  totalHits = 0;
 
   async componentDidUpdate(_, prevState) {
     const { page, topic } = this.state;
     if (prevState.topic !== topic || prevState.page !== page) {
       this.setState({ status: "pending" });
       try {
-        const imageData = await fetchApi(topic, page);
-        const imagesHits = imageData.hits;
-        this.totalHits = imageData.total;
+        const { hits: imagesHits, total: totalHits } = await fetchApi(
+          topic,
+          page
+        );
 
         if (!imagesHits.length) {
           Notify.failure(
@@ -35,10 +41,12 @@ export class App extends Component {
         this.setState(({ images }) => ({
           images: [...images, ...imagesHits],
           status: "resolved",
+          totalHits,
         }));
       } catch (error) {
         this.setState({
-          status: "error message",
+          status: "rejected",
+          error: "Something went wrong",
         });
       }
     }
@@ -47,11 +55,17 @@ export class App extends Component {
   // click to button seach
   handleFormSubmit = (topic) => {
     this.setState({
-      seachTopic: topic,
+      topic,
       page: 1,
       images: [],
-      topic,
     });
+  };
+
+  // click button load more
+  loadMore = () => {
+    this.setState((prevState) => ({
+      page: prevState.page + 1,
+    }));
   };
 
   // modal imag
@@ -63,32 +77,13 @@ export class App extends Component {
     });
   };
 
-  // click button load more
-  loadMore = () => {
-    this.setState((prevState) => ({
-      page: prevState.page + 1,
-    }));
-  };
-
   // click button close modal
   closeModal = () => {
     this.setState({
+      selectedImage: "",
+      alt: "",
       showModal: false,
     });
-  };
-
-  //seach topic images
-  handleChange = (e) => {
-    this.setState({ seachTopic: e.currentTarget.value.toLowerCase() });
-  };
-  handleSubmit = (e) => {
-    const { seachTopic } = this.state;
-    e.preventDefault();
-    if (seachTopic.trim() === "") {
-      Notify.failure("Please enter what do you find");
-      return;
-    }
-    this.handleFormSubmit(seachTopic);
   };
 
   render() {
@@ -98,21 +93,15 @@ export class App extends Component {
       selectedImage,
       alt,
       error,
-      seachTopic,
       showModal,
+      totalHits,
     } = this.state;
     return (
       <>
-        <SearchBar
-          onChange={this.handleChange}
-          onSubmit={this.handleSubmit}
-          value={seachTopic}
-        />
+        <SearchBar onSubmit={this.handleFormSubmit} />
         {status === "pending" && <Loader />}
         {error && (
-          <h1 style={{ color: "orangered", textAlign: "center" }}>
-            {error.message}
-          </h1>
+          <h1 style={{ color: "orangered", textAlign: "center" }}>{error}</h1>
         )}
         {images.length > 0 && (
           <ImageGallery
@@ -120,7 +109,7 @@ export class App extends Component {
             selectedImage={this.handleSelectedImage}
           />
         )}
-        {images.length !== this.totalHits && status === "resolved" && (
+        {images.length !== totalHits && status === "resolved" && (
           <Button onClick={this.loadMore} />
         )}
         {showModal && (
