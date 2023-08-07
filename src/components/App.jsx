@@ -41,6 +41,7 @@ export class App extends Component {
     }
   }
 
+  // click to button seach
   handleFormSubmit = (topic) => {
     this.setState({
       seachTopic: "",
